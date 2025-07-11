@@ -21,7 +21,7 @@ func init() {
 func main() {
 	// Pass the logger to the root command
 	l.Info().Msg("... Starting SnapNGo ...")
-	if err := cmd.Execute(); err != nil {
+	if err := cmd.Execute(l); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

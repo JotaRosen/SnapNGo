@@ -39,16 +39,6 @@ var rootCmd = &cobra.Command{
 	Short: "A CLI tool for processing DB backUps",
 	Long:  `SnapNGo is a CLI utility that helps DBMS backup and restore operations`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Initialize logger if not already initialized
-		var err error
-		if l == nil {
-			l, err = logger.NewLogger("", "root")
-			if err != nil {
-				fmt.Println("Failed to initialize logger:", err)
-				os.Exit(1)
-			}
-		}
-
 		// Validate flag values
 		if dbConnectionFile != "" {
 			// concurrent executors
@@ -56,15 +46,6 @@ var rootCmd = &cobra.Command{
 			// TODO: Implement concurrent executors
 			return
 		}
-
-		// Log the flag values for debugging
-		fmt.Println("Command:", cp.Command)
-		fmt.Println("Engine:", cp.Engine)
-		fmt.Println("Host:", cp.Host)
-		fmt.Println("Port:", cp.Port)
-		fmt.Println("Username:", cp.Username)
-		fmt.Println("Password:", cp.Password)
-		fmt.Println("DbName:", cp.DbName)
 
 		// Execute the command
 		executors.Single(cp, l)
@@ -92,9 +73,7 @@ func init() {
 	rootCmd.MarkFlagRequired("port")
 	//rootCmd.MarkFlagRequired("username")
 	// rootCmd.MarkFlagRequired("password")
-	// rootCmd.MarkFlagRequired("dbName")
-
-	fmt.Println("Finishing init root command" + cp.Command)
+	//rootCmd.MarkFlagRequired("dbName")
 
 	//info comes from config file OR cmd arguments.
 
@@ -107,6 +86,7 @@ func init() {
 }
 
 // Execute executes the root command
-func Execute() error {
+func Execute(loggerSingleton *logger.Logger) error {
+	l = loggerSingleton
 	return rootCmd.Execute()
 }
