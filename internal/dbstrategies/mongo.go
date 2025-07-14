@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/url"
+	"os/exec"
 	"snap-n-go/internal/types"
 	"time"
 )
@@ -45,15 +46,64 @@ func buildURI(cp *MongoConnectionParams) string {
 	return uri
 }
 
-func (cp *MongoConnectionParams) Ping() error {
+func (cp *MongoConnectionParams) getMongoClient() (*mongo.Client, context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(buildURI(cp)))
 	if err != nil {
+		cancel()
+	}
+	return client, ctx, cancel
+}
+
+func (cp *MongoConnectionParams) Ping() error {
+	client, ctx, cancel := cp.getMongoClient()
+
+	//Both of these func need to be execute after command exeution
+
+	defer cancel()
+	defer client.Disconnect(ctx)
+	return client.Ping(ctx, nil)
+}
+
+func (cp *MongoConnectionParams) BackUp() error {
+	// The mongodump tool will establish its own connection.
+	// Base arguments for the mongodump command
+
+	backupPath := "snapshot-" + time.Now().Format(time.RFC3339) // RFC3339  = "2006-01-02T15:04:05Z07:00"
+	args := []string{
+		"--host", cp.Host,
+		"--port", cp.Port,
+		"--out", backupPath,
+	}
+
+	// Conditionally add arguments based on the connection parameters
+	if cp.Username != "" {
+		args = append(args, "--username", cp.Username)
+	}
+	if cp.Password != "" {
+		args = append(args, "--password", cp.Password)
+		// When using credentials, you often need to specify the authentication database.
+		args = append(args, "--authenticationDatabase", "admin")
+	}
+
+	// If a specific database name is provided, only back up that database.
+	// Otherwise, mongodump will back up all databases on the server.
+	if cp.DbName != "" {
+		args = append(args, "--db", cp.DbName)
+	}
+
+	// Create the command with our arguments
+	cmd := exec.Command("mongodump", args...)
+
+	// Execute the command and capture both stdout and stderr
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		// If the command fails, return a detailed error including the output from mongodump,
+		// which is very helpful for debugging connection issues or permissions problems.
+
+		fmt.Errorf("mongodump command failed: %w\nOutput: %s", err, string(output))
 		return err
 	}
-	defer client.Disconnect(ctx) //defer needed since we are client is returned and exectuion es after function clousure
-
-	return client.Ping(ctx, nil)
+	return nil
 }

@@ -10,7 +10,9 @@ var CommandFactory = map[string]func(dbstrategies.DBStrategy, map[string]types.C
 	"ping": func(s dbstrategies.DBStrategy, _ map[string]types.ConnectionParams) commands.Command {
 		return &commands.PingCommand{Strategy: s}
 	},
-	// backup ,
+	"backup": func(s dbstrategies.DBStrategy, _ map[string]types.ConnectionParams) commands.Command {
+		return &commands.BackUpCommand{Strategy: s}
+	},
 	// resotre ,
 	// etc
 }

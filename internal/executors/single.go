@@ -29,6 +29,8 @@ func Single(cp types.ConnectionParams, l *logger.Logger) {
 	strategy := strategyFn(argsMap)
 	cmd := commandFn(strategy, argsMap)
 
+	l.Info().Msg("Executing command: " + cp.Command)
+
 	if err := cmd.Execute(); err != nil {
 		l.Error().AnErr("Error while executing "+cp.Command+" on DBMS: "+cp.Engine, err).Send()
 		os.Exit(1)
