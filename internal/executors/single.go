@@ -10,10 +10,6 @@ import (
 func Single(cp types.ConnectionParams, l *logger.Logger) {
 
 	l.Info().Msg("Starting single command execution")
-	argsMap := map[string]types.ConnectionParams{
-		"cp": cp,
-	}
-
 	strategyFn, ok := factories.StrategyFactory[cp.Engine]
 	if !ok {
 		l.Error().Msg("unsupported DB: " + cp.Engine)
@@ -22,12 +18,12 @@ func Single(cp types.ConnectionParams, l *logger.Logger) {
 
 	commandFn, ok := factories.CommandFactory[cp.Command]
 	if !ok {
-		l.Error().Msg("unsupported DB: " + cp.Command)
+		l.Error().Msg("unsupported Command: " + cp.Command)
 		os.Exit(1)
 	}
 
-	strategy := strategyFn(argsMap)
-	cmd := commandFn(strategy, argsMap)
+	strategy := strategyFn(cp)
+	cmd := commandFn(strategy, cp)
 
 	l.Info().Msg("Executing command: " + cp.Command)
 

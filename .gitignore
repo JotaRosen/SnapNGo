@@ -3,3 +3,4 @@ test_snap_n_go.sh
 .idea
 .env
 snapshot-*
+db_connection.json
