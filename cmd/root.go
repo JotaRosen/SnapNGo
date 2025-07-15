@@ -43,7 +43,7 @@ var rootCmd = &cobra.Command{
 		if dbConnectionFile != "" {
 			// concurrent executors
 			fmt.Println("Using multiple DBs file:", dbConnectionFile)
-			// TODO: Implement concurrent executors
+			executors.Concurrent(dbConnectionFile, l)
 			return
 		}
 
@@ -67,11 +67,11 @@ func init() {
 	rootCmd.Flags().StringVarP(&dbConnectionFile, "multipleDBsFile", "", "", "path file to a list of DBs config and their commands")
 
 	// Mark required flags
-	rootCmd.MarkFlagRequired("command")
-	rootCmd.MarkFlagRequired("engine")
-	rootCmd.MarkFlagRequired("dbhost")
-	rootCmd.MarkFlagRequired("port")
-	//rootCmd.MarkFlagRequired("username")
+	// rootCmd.MarkFlagRequired("command")
+	// rootCmd.MarkFlagRequired("engine")
+	// rootCmd.MarkFlagRequired("dbhost")
+	// rootCmd.MarkFlagRequired("port")
+	// rootCmd.MarkFlagRequired("username")
 	// rootCmd.MarkFlagRequired("password")
 	//rootCmd.MarkFlagRequired("dbName")
 

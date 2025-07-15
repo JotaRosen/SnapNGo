@@ -6,11 +6,11 @@ import (
 	"snap-n-go/internal/types"
 )
 
-var CommandFactory = map[string]func(dbstrategies.DBStrategy, map[string]types.ConnectionParams) commands.Command{
-	"ping": func(s dbstrategies.DBStrategy, _ map[string]types.ConnectionParams) commands.Command {
+var CommandFactory = map[string]func(dbstrategies.DBStrategy, types.ConnectionParams) commands.Command{
+	"ping": func(s dbstrategies.DBStrategy, _ types.ConnectionParams) commands.Command {
 		return &commands.PingCommand{Strategy: s}
 	},
-	"backup": func(s dbstrategies.DBStrategy, _ map[string]types.ConnectionParams) commands.Command {
+	"backup": func(s dbstrategies.DBStrategy, _ types.ConnectionParams) commands.Command {
 		return &commands.BackUpCommand{Strategy: s}
 	},
 	// resotre ,

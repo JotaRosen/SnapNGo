@@ -6,16 +6,16 @@ import (
 )
 
 // Recibe parámetros y retorna la estrategia adecuada
-var StrategyFactory = map[string]func(map[string]types.ConnectionParams) dbstrategies.DBStrategy{
-	"mongo": func(args map[string]types.ConnectionParams) dbstrategies.DBStrategy {
+var StrategyFactory = map[string]func(types.ConnectionParams) dbstrategies.DBStrategy{
+	"mongo": func(cp types.ConnectionParams) dbstrategies.DBStrategy {
 		return &dbstrategies.MongoConnectionParams{
-			Command:  args["cp"].Command,
-			Engine:   args["cp"].Engine,
-			Host:     args["cp"].Host,
-			Port:     args["cp"].Port,
-			Username: args["cp"].Username,
-			Password: args["cp"].Password,
-			DbName:   args["cp"].DbName,
+			Command:  cp.Command,
+			Engine:   cp.Engine,
+			Host:     cp.Host,
+			Port:     cp.Port,
+			Username: cp.Username,
+			Password: cp.Password,
+			DbName:   cp.DbName,
 		}
 	},
 }

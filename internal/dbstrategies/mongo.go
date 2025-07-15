@@ -70,11 +70,10 @@ func (cp *MongoConnectionParams) BackUp() error {
 	// The mongodump tool will establish its own connection.
 	// Base arguments for the mongodump command
 
-	backupPath := "snapshot-" + time.Now().Format(time.RFC3339) // RFC3339  = "2006-01-02T15:04:05Z07:00"
+	//backupPath := "snapshot-" + time.Now().Format(time.RFC3339) // RFC3339  = "2006-01-02T15:04:05Z07:00"
 	args := []string{
 		"--host", cp.Host,
 		"--port", cp.Port,
-		"--out", backupPath,
 	}
 
 	// Conditionally add arguments based on the connection parameters
@@ -90,7 +89,8 @@ func (cp *MongoConnectionParams) BackUp() error {
 	// If a specific database name is provided, only back up that database.
 	// Otherwise, mongodump will back up all databases on the server.
 	if cp.DbName != "" {
-		args = append(args, "--db", cp.DbName)
+		backupPath := "snapshot-" + cp.DbName + "-" + time.Now().Format(time.RFC3339) // RFC3339  = "2006-01-02T15:04:05Z07:00"
+		args = append(args, "--db", cp.DbName, "--out", backupPath)
 	}
 
 	// Create the command with our arguments
