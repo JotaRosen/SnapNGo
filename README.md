@@ -4,7 +4,7 @@ Readme pending. Proyect WIP
 Next steps.
 
 1. Add incremental and decremental backups for mongo
-2. Restores for mongo
+2. Restores for mongo (Done)
 3. Fix flags constraints
 4. Postgresql ping, backup and restore commands
 5. Add tests for all commands
