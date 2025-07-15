@@ -13,6 +13,9 @@ var CommandFactory = map[string]func(dbstrategies.DBStrategy, types.ConnectionPa
 	"backup": func(s dbstrategies.DBStrategy, _ types.ConnectionParams) commands.Command {
 		return &commands.BackUpCommand{Strategy: s}
 	},
-	// resotre ,
-	// etc
+	"restore": func(s dbstrategies.DBStrategy, _ types.ConnectionParams) commands.Command {
+		return &commands.RestoreCommand{Strategy: s}
+	},
+	// incrementeal backup
+	// diff backup
 }
